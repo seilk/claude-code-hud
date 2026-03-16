@@ -348,7 +348,15 @@ async function main() {
   // Context bar
   elements.push(renderContext(contextPct));
 
+  // Line 1: usage info
   console.log(elements.join(` ${DIM}|${RESET} `));
+
+  // Line 2: current working directory
+  const cwd = input.cwd || process.cwd();
+  const home = homedir();
+  const display = cwd.startsWith(home) ? "~" + cwd.slice(home.length) : cwd;
+  const CWD_COLOR = "\x1b[38;2;217;119;87m"; // #d97757
+  console.log(`${CWD_COLOR}${display}${RESET}`);
 }
 
 main();
