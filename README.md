@@ -1,5 +1,7 @@
 # claude-code-hud
 
+> Inspired by and partially derived from the HUD implementation in [oh-my-claudecode (OMC)](https://github.com/nicobailon/oh-my-claudecode). Some parts of the OAuth usage API integration were adapted and customized for standalone use.
+
 A standalone status line HUD for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — no plugins or dependencies required.
 
 Displays rate limits, session time, and context window usage directly in the Claude Code status bar.
