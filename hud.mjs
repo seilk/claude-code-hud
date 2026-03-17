@@ -70,6 +70,48 @@ async function readStdin() {
   });
 }
 
+// ── CCR Model Detection ─────────────────────────────────────
+function isCcrMode() {
+  const baseUrl = process.env.ANTHROPIC_BASE_URL || "";
+  return baseUrl.includes("127.0.0.1") || baseUrl.includes("localhost");
+}
+
+function getModelFromTranscript(transcriptPath) {
+  if (!transcriptPath || !existsSync(transcriptPath)) return null;
+  try {
+    const lines = readFileSync(transcriptPath, "utf8").trim().split("\n");
+    for (let i = lines.length - 1; i >= 0; i--) {
+      try {
+        const entry = JSON.parse(lines[i]);
+        if (entry.type === "assistant" && entry.message?.model) {
+          return entry.message.model;
+        }
+      } catch { continue; }
+    }
+  } catch {}
+  return null;
+}
+
+function getModelFromCcrConfig() {
+  try {
+    const configPath = join(homedir(), ".claude-code-router", "config.json");
+    if (!existsSync(configPath)) return null;
+    const config = JSON.parse(readFileSync(configPath, "utf8"));
+    const defaultRoute = config.Router?.default;
+    if (!defaultRoute) return null;
+    const [, model] = defaultRoute.split(",");
+    return model?.trim() || null;
+  } catch {}
+  return null;
+}
+
+function getCcrModel(input) {
+  if (!isCcrMode()) return null;
+  return getModelFromTranscript(input.transcript_path)
+    || getModelFromCcrConfig()
+    || null;
+}
+
 // ── Context Percent ──────────────────────────────────────────
 function getContextPercent(input) {
   if (input.context_window?.used_percentage != null) {
@@ -331,12 +373,25 @@ function renderSession(input) {
   return parts.length ? `session:${parts.join(" ")}` : null;
 }
 
+const CYAN = "\x1b[36m";
+const BRIGHT_CYAN = "\x1b[96m";
+
+function renderModel(input) {
+  const model = getCcrModel(input);
+  if (!model) return null;
+  return `${BRIGHT_CYAN}${model}${RESET}`;
+}
+
 // ── Main ──────────────────────────────────────────────────────
 async function main() {
   const [input, usage] = await Promise.all([readStdin(), fetchUsage()]);
 
   const contextPct = getContextPercent(input);
   const elements = [];
+
+  // CCR model name (only shown when running via CCR)
+  const model = renderModel(input);
+  if (model) elements.push(model);
 
   // Rate limits (5hr + weekly)
   elements.push(renderRateLimits(usage));
