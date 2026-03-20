@@ -42,6 +42,7 @@ export const DEFAULT_CONFIG = {
         usageThreshold: 0,
         sevenDayThreshold: 80,
         environmentThreshold: 0,
+        customLine: '',
     },
     usage: {
         cacheTtlSeconds: 60,
@@ -212,6 +213,9 @@ export function mergeConfig(userConfig) {
         usageThreshold: validateThreshold(migrated.display?.usageThreshold, 100),
         sevenDayThreshold: validateThreshold(migrated.display?.sevenDayThreshold, 100),
         environmentThreshold: validateThreshold(migrated.display?.environmentThreshold, 100),
+        customLine: typeof migrated.display?.customLine === 'string'
+            ? migrated.display.customLine.slice(0, 80)
+            : DEFAULT_CONFIG.display.customLine,
     };
     const usage = {
         cacheTtlSeconds: validatePositiveInt(migrated.usage?.cacheTtlSeconds, DEFAULT_CONFIG.usage.cacheTtlSeconds),

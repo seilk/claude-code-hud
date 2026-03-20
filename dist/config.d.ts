@@ -41,6 +41,7 @@ export interface HudConfig {
         usageThreshold: number;
         sevenDayThreshold: number;
         environmentThreshold: number;
+        customLine: string;
     };
     usage: {
         cacheTtlSeconds: number;

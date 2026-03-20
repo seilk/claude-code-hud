@@ -7,6 +7,7 @@ const MAGENTA = '\x1b[35m';
 const CYAN = '\x1b[36m';
 const BRIGHT_BLUE = '\x1b[94m';
 const BRIGHT_MAGENTA = '\x1b[95m';
+const CLAUDE_ORANGE = '\x1b[38;5;208m';
 const ANSI_BY_NAME = {
     red: RED,
     green: GREEN,
@@ -42,6 +43,9 @@ export function magenta(text) {
 }
 export function dim(text) {
     return colorize(text, DIM);
+}
+export function claudeOrange(text) {
+    return colorize(text, CLAUDE_ORANGE);
 }
 export function warning(text, colors) {
     return colorize(text, resolveAnsi(colors?.warning, YELLOW));
