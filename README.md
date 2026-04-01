@@ -289,6 +289,15 @@ To disable, set `display.showUsage` to `false`.
 
 ---
 
+## For Agent
+
+To set up this HUD on a new machine via an AI agent, see [SETUP.md](SETUP.md).
+It contains step-by-step instructions that an agent can follow to clone, build,
+configure `settings.json`, and apply the display config (including always-on
+7-day weekly usage display).
+
+---
+
 ## Development
 
 ```bash
